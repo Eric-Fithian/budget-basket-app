@@ -1,13 +1,15 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.query = void 0;
-const pg_1 = require("pg");
-const config_1 = __importDefault(require("../config"));
-const pool = new pg_1.Pool({
-    connectionString: config_1.default.databaseURL,
-});
-const query = (text, params) => pool.query(text, params);
-exports.query = query;
+// Import the pg-promise library and initialize it
+const pgp = require('pg-promise')();
+console.log('Connecting to database using url: ' + process.env.DATABASE_URL);
+let db = pgp(process.env.DATABASE_URL);
+/*
+The database object above represents a connection to our database. However,
+it isn't actually connected yet. The object is an abstraction of the connection.
+When you run a query against db, it will automatically connect to the database
+and release it when its finished.
+
+This database object should be the only one in the application. We import
+the file where we need to make queries.
+*/
+module.exports = db;

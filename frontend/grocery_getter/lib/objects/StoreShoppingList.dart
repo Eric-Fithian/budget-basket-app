@@ -6,20 +6,21 @@ class StoreShoppingList {
   String name;
   List<Item> items;
 
-  StoreShoppingList({
-    required this.latitude,
-    required this.longitude,
-    required this.name,
-    required this.items
-  });
+  StoreShoppingList(
+      {required this.latitude,
+      required this.longitude,
+      required this.name,
+      required this.items});
 
-
-  factory StoreShoppingList.fromJSON(Map<String, dynamic> json) {
+  factory StoreShoppingList.fromJson(Map<String, dynamic> json) {
     return StoreShoppingList(
-      latitude: json['latitude'].toDouble(), // Ensure this is a double
-      longitude: json['longitude'].toDouble(), // Ensure this is a double
+      latitude:
+          json['location']['latitude'].toDouble(), // Ensure this is a double
+      longitude:
+          json['location']['longitude'].toDouble(), // Ensure this is a double
       name: json['name'],
-      items: List<Item>.from(json['items'].map((itemJson) => Item.fromJSON(itemJson))),
+      items: List<Item>.from(
+          json['items'].map((itemJson) => Item.fromJson(itemJson))),
     );
   }
 }

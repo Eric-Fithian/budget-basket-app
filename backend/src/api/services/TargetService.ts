@@ -20,6 +20,9 @@ class TargetService {
     // miles to meters
     const radiusInMeters = radius * 1609.34;
 
+    console.log('latitude:', latitude);
+    console.log('longitude:', longitude);
+
     const googleMapsPlacesURL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radiusInMeters}&type=department_store&keyword=Target&key=${this.googleMapsApiKey}`;
 
     try {
@@ -39,12 +42,15 @@ class TargetService {
 
 
   public async searchForItem(searchTerm: string) : Promise<Item[]>{
+    // only get food, beverage, and household essentials
     const params = {
       api_key: this.apiKey,
       search_term: searchTerm,
       customer_zip: this.zipCode,
+      page: 1,
       type: "search"
     };
+    
 
     try {
       const response = await axios.get('https://api.redcircleapi.com/request', { params });

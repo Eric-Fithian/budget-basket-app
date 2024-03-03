@@ -74,7 +74,6 @@ class KrogerService {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(response.data)
       if (response.data.data.length === 0) {
         return [];
       }
@@ -84,7 +83,6 @@ class KrogerService {
       });
       // remove items with no price
       return items.filter((item) => item.price !== null && item.price !== undefined);
-      return items;
     } catch (error) {
       console.error('Error fetching Kroger items:', error);
       throw error;
