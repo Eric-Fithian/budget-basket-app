@@ -63,45 +63,145 @@ class _ShoppingPageState extends State<ShoppingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Shopping List'),
-      ),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            IconButton(
-                onPressed: _launchDirections,
-                icon: Icon(Icons.directions_car_filled_outlined)),
-            Expanded(
-              child: ListView.builder(
-                itemCount: widget.stores.length,
-                itemBuilder: (context, index) {
-                  final store = widget.stores[index];
-                  return Card(
-                    child: ExpansionTile(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      title: Text(store.name,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20)),
-                      // Removed IconButton from here
-                      children: store.items
-                          .map((item) => ItemCheckbox(item: item))
-                          .toList(),
-                    ),
-                  );
-                },
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 30, horizontal: 12),
+              child: Text(
+                'Personalized Shopping List',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
-                },
-                child: Text('New Shopping Trip'),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(), // Add this line
+                      shrinkWrap: true, // Add this line
+                      itemCount: widget.stores.length,
+                      itemBuilder: (context, index) {
+                        final store = widget.stores[index];
+                        return Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: 5.0, horizontal: 10.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 42, 60, 62)
+                                    .withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: ExpansionTile(
+                            iconColor: Colors.black,
+                            backgroundColor: Color.fromARGB(255, 233, 255, 228),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            title: Text(store.name,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20)),
+                            children: store.items
+                                .map((item) => ItemCheckbox(item: item))
+                                .toList(),
+                          ),
+                        );
+                      },
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 24, horizontal: 24),
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 241, 208, 208),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromARGB(255, 62, 42, 42)
+                                .withOpacity(0.15),
+                            spreadRadius: 1,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomePage()));
+                          },
+                          child: Text(
+                            'Done Shopping',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                            minimumSize: Size(double.infinity,
+                                30), // makes button expand horizontally
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(color: Colors.grey, width: 0.5),
+                ),
+              ),
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 208, 241, 234),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(255, 42, 60, 62).withOpacity(0.15),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => HomePage()));
+                    },
+                    child: Text(
+                      'Map Shortest Route',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      minimumSize: Size(double.infinity,
+                          30), // makes button expand horizontally
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -125,6 +225,9 @@ class _ItemCheckboxState extends State<ItemCheckbox> {
   Widget build(BuildContext context) {
     return CheckboxListTile(
       value: widget.item.isChecked,
+      activeColor: const Color.fromARGB(255, 0, 0, 0),
+      checkColor: Colors.transparent,
+      checkboxShape: CircleBorder(),
       title:
           Text('${widget.item.name}, Estimated Price: \$${widget.item.price}'),
       onChanged: (bool? value) {
