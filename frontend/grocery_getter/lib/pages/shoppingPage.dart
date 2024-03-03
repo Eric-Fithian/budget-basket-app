@@ -184,10 +184,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                 child: Align(
                   alignment: Alignment.center,
                   child: TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
-                    },
+                    onPressed: _launchDirections,
                     child: Text(
                       'Map Shortest Route',
                       style: TextStyle(
