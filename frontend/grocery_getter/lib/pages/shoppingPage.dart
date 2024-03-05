@@ -225,8 +225,9 @@ class _ItemCheckboxState extends State<ItemCheckbox> {
       activeColor: const Color.fromARGB(255, 0, 0, 0),
       checkColor: Colors.transparent,
       checkboxShape: CircleBorder(),
-      title:
-          Text('${widget.item.name}, Estimated Price: \$${widget.item.price}'),
+      title: Text(
+        '${widget.item.name}${(widget.item.price <= 0) ? '' : ', Estimated Price: \$${widget.item.price}'}${(widget.item.savings == null || widget.item.savings == 0) ? '' : ', Savings: \$${widget.item.savings}'}',
+      ),
       onChanged: (bool? value) {
         setState(() {
           widget.item.isChecked = value!;

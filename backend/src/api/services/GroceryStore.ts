@@ -1,7 +1,7 @@
 import { GeoLocation } from './GeoLocation';
 import { Item } from './Item';
 
-class StoreShoppingList {
+class GroceryStore {
     location: GeoLocation;
     name: string;
     items: Item[];
@@ -12,4 +12,4 @@ class StoreShoppingList {
     }
 }
 
-export { StoreShoppingList };
+export { GroceryStore };

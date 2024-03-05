@@ -1,12 +1,17 @@
 import axios from "axios";
 import { Item } from "./Item";
 import { GeoLocation } from "./GeoLocation";
+import { GroceryStoreService } from "./GroceryStoreService";
 
-class TraderjoesService {
+class TraderjoesService implements GroceryStoreService{
     googleMapsApiKey: string;
 
     constructor(googleMapsApiKey: string) {
         this.googleMapsApiKey = googleMapsApiKey;
+    }
+
+    public getName(): string {
+        return 'Trader Joe\'s';
     }
 
     public async getClosestLocation(currentLocation: GeoLocation, radius: number): Promise<GeoLocation> {

@@ -10,27 +10,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GroceryRouter = void 0;
-const StoreShoppingList_1 = require("./StoreShoppingList");
+const GroceryStore_1 = require("./GroceryStore");
 const GeoLocation_1 = require("./GeoLocation");
 const Item_1 = require("./Item");
 class GroceryRouter {
-    constructor(currentLocation, radius, krogerService, targetService) {
+    constructor(currentLocation, radius, services) {
         this.currentLocation = currentLocation;
-        this.krogerService = krogerService;
-        this.targetService = targetService;
+        this.groceryStoreServices = services;
         this.radius = radius;
     }
     processList(list) {
         return __awaiter(this, void 0, void 0, function* () {
-            let targetShoppingList = new StoreShoppingList_1.StoreShoppingList(yield this.targetService.getClosestLocation(this.currentLocation, this.radius), 'Target', []);
-            let krogerShoppingList = new StoreShoppingList_1.StoreShoppingList(yield this.krogerService.getClosestLocation(this.currentLocation, this.radius), 'Kroger', []);
-            let notFoundShoppingList = new StoreShoppingList_1.StoreShoppingList(new GeoLocation_1.GeoLocation(0, 0), 'Not Found', []);
+            let groceryStores = [];
+            for (const service of this.groceryStoreServices) {
+                groceryStores.push(new GroceryStore_1.GroceryStore(yield service.getClosestLocation(this.currentLocation, this.radius), service.getName(), []));
+            }
+            for (const store of groceryStores) {
+                console.log(store.name, " location: ", store.location);
+            }
+            let notFoundShoppingList = new GroceryStore_1.GroceryStore(new GeoLocation_1.GeoLocation(0, 0), 'Not Found', []);
             let shoppingRoute = [];
             for (const itemName of list) {
-                const targetItems = yield this.targetService.searchForItem(itemName);
-                const krogerItems = yield this.krogerService.searchForItem(itemName);
-                console.log('targetItems:', targetItems);
-                console.log('krogerItems:', krogerItems);
+                let itemResultsList = [];
+                for (const service of this.groceryStoreServices) {
+                    const items = yield service.searchForItem(itemName);
+                    itemResultsList.push(items);
+                }
                 const calculateMedianPrice = (items) => {
                     if (items.length === 0) {
                         return Infinity;
@@ -50,30 +55,33 @@ class GroceryRouter {
                         return sortedItems[middleIndex].price;
                     }
                 };
-                const targetMedianPrice = calculateMedianPrice(targetItems);
-                const krogerMedianPrice = calculateMedianPrice(krogerItems);
-                console.log('targetMedianPrice:', targetMedianPrice);
-                console.log('krogerMedianPrice:', krogerMedianPrice);
-                if (targetItems.length === 0 && krogerItems.length === 0) {
+                // median item prices list
+                let medianItems = [];
+                // Calculate median price for each list of results
+                for (const items of itemResultsList) {
+                    medianItems.push(new Item_1.Item(itemName, calculateMedianPrice(items)));
+                }
+                // get min median price
+                let minPrice = Infinity;
+                let minIndex = -1;
+                for (let i = 0; i < medianItems.length; i++) {
+                    if (medianItems[i].price < minPrice) {
+                        minPrice = medianItems[i].price;
+                        minIndex = i;
+                    }
+                }
+                if (minIndex === -1) {
                     notFoundShoppingList.items.push(new Item_1.Item(itemName, 0));
                 }
-                else if (krogerMedianPrice < targetMedianPrice) {
-                    krogerShoppingList.items.push(new Item_1.Item(itemName, krogerMedianPrice));
-                }
                 else {
-                    targetShoppingList.items.push(new Item_1.Item(itemName, targetMedianPrice));
+                    groceryStores[minIndex].items.push(medianItems[minIndex]);
                 }
             }
-            if (targetShoppingList.items.length > 0) {
-                shoppingRoute.push(targetShoppingList);
+            for (const store of groceryStores) {
+                if (store.items.length > 0) {
+                    shoppingRoute.push(store);
+                }
             }
-            if (krogerShoppingList.items.length > 0) {
-                shoppingRoute.push(krogerShoppingList);
-            }
-            if (notFoundShoppingList.items.length > 0) {
-                shoppingRoute.push(notFoundShoppingList);
-            }
-            // TODO: Find shortest path to visit all stores
             return shoppingRoute;
         });
     }

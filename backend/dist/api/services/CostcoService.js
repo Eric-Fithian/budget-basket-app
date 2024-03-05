@@ -12,72 +12,63 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TargetService = void 0;
+exports.CostcoService = void 0;
 const axios_1 = __importDefault(require("axios"));
 const GeoLocation_1 = require("./GeoLocation");
-class TargetService {
-    constructor(apiKey, googleMapsApiKey) {
-        this.apiKey = apiKey;
+class CostcoService {
+    constructor(googleMapsApiKey) {
         this.googleMapsApiKey = googleMapsApiKey;
-        this.zipCode = '';
-    }
-    getName() {
-        return 'Target';
     }
     getClosestLocation(currentLocation, radius) {
         return __awaiter(this, void 0, void 0, function* () {
             const latitude = currentLocation.getLatitude();
             const longitude = currentLocation.getLongitude();
-            // use google maps api to get the closest target location
+            // use google maps api to get the closest costco location
             // miles to meters
             const radiusInMeters = radius * 1609.34;
             console.log('latitude:', latitude);
             console.log('longitude:', longitude);
-            const googleMapsPlacesURL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radiusInMeters}&type=department_store&keyword=Target&key=${this.googleMapsApiKey}`;
+            const googleMapsPlacesURL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radiusInMeters}&type=department_store&keyword=Costco&key=${this.googleMapsApiKey}`;
             try {
                 const response = yield axios_1.default.get(googleMapsPlacesURL);
                 if (response.data.results.length > 0) {
-                    const closestTarget = response.data.results[0];
-                    this.zipCode = closestTarget.vicinity.split(' ')[-1];
-                    return new GeoLocation_1.GeoLocation(closestTarget.geometry.location.lat, closestTarget.geometry.location.lng);
+                    const closestCostco = response.data.results[0];
+                    return new GeoLocation_1.GeoLocation(closestCostco.geometry.location.lat, closestCostco.geometry.location.lng);
                 }
                 else {
-                    throw new Error('No Target locations found within the specified radius.');
+                    throw new Error('No Costco locations found within the specified radius.');
                 }
             }
             catch (error) {
-                console.error('Error fetching closest Target location:', error);
+                console.error('Error fetching closest Costco location:', error);
                 throw error;
             }
         });
     }
     searchForItem(searchTerm) {
         return __awaiter(this, void 0, void 0, function* () {
-            // only get food, beverage, and household essentials
+            // Replace whitespaces with plus signs for URL compatibility
+            const formattedSearchTerm = searchTerm.replace(/\s+/g, '+');
             const params = {
-                api_key: this.apiKey,
-                search_term: searchTerm,
-                customer_zip: this.zipCode,
-                page: 1,
-                type: "search"
+                platform: "costco_search",
+                search: formattedSearchTerm
             };
             try {
-                const response = yield axios_1.default.get('https://api.redcircleapi.com/request', { params });
-                if (response.data.search_results == undefined || response.data.search_results.length === 0) {
+                const response = yield axios_1.default.get('https://data.unwrangle.com/api/getter/', { params });
+                if (response.data.results === undefined || response.data.results.length === 0) {
                     return [];
                 }
-                const items = response.data.search_results.map((result) => ({
-                    title: result.product.title,
-                    price: result.offers.primary.price
+                const items = response.data.results.map((result) => ({
+                    name: result.name,
+                    price: result.price
                 }));
-                // remove items with no price
-                return items.filter((item) => item.price !== null && item.price !== undefined);
+                return items;
             }
             catch (error) {
-                console.error('Error fetching items from Target:', error);
+                console.error('Error fetching items from Costco:', error);
                 throw error;
             }
         });
     }
 }
-exports.TargetService = TargetService;
+exports.CostcoService = CostcoService;

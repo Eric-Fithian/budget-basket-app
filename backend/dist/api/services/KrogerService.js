@@ -24,6 +24,9 @@ class KrogerService {
         this.clientSecret = clientSecret;
         this.locationId = '';
     }
+    getName() {
+        return 'Kroger';
+    }
     getAccessToken() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.accessToken && this.accessTokenExpiration && new Date() < this.accessTokenExpiration) {
@@ -80,7 +83,6 @@ class KrogerService {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 });
-                console.log(response.data);
                 if (response.data.data.length === 0) {
                     return [];
                 }
@@ -90,7 +92,6 @@ class KrogerService {
                 });
                 // remove items with no price
                 return items.filter((item) => item.price !== null && item.price !== undefined);
-                return items;
             }
             catch (error) {
                 console.error('Error fetching Kroger items:', error);

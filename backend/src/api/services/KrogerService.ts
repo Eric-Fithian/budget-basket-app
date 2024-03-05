@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { GeoLocation } from './GeoLocation';
 import { Item } from './Item';
+import { GroceryStoreService } from './GroceryStoreService';
 
-class KrogerService {
+class KrogerService implements GroceryStoreService {
   private clientId: string;
   private clientSecret: string;
   private accessToken: string | null = null;
@@ -13,6 +14,10 @@ class KrogerService {
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.locationId = '';
+  }
+
+  public getName(): string {
+    return 'Kroger';
   }
 
   private async getAccessToken(): Promise<string> {
@@ -50,11 +55,15 @@ class KrogerService {
     const longitude = currentLocation.getLongitude();
 
     try {
-      const response = await axios.get(`https://api-ce.kroger.com/v1/locations?filter.lat=${latitude}&filter.lon=${longitude}&filter.radiusInMiles=${radius}`, {
+      const response = await axios.get(`https://api-ce.kroger.com/v1/locations?filter.latLong.near=${latitude},${longitude}&filter.radiusInMiles=${radius}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      // console.log('Kroger locations:')
+      // for (const location of response.data.data) {
+      //   console.log(location.name, location.geolocation.latitude, location.geolocation.longitude);
+      // }
 
       this.locationId = response.data.data[0].locationId;
       const closestLocation: GeoLocation = new GeoLocation(response.data.data[0].geolocation.latitude, response.data.data[0].geolocation.longitude);

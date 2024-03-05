@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { GeoLocation } from './GeoLocation';
 import { Item } from './Item';
+import { GroceryStoreService } from './GroceryStoreService';
 
-class TargetService {
+class TargetService implements GroceryStoreService{
   private apiKey: string;
   private googleMapsApiKey: string;
   private zipCode: string;
@@ -11,6 +12,10 @@ class TargetService {
     this.apiKey = apiKey;
     this.googleMapsApiKey = googleMapsApiKey;
     this.zipCode = '';
+  }
+
+  public getName(): string {
+    return 'Target';
   }
 
   public async getClosestLocation(currentLocation: GeoLocation, radius: number) : Promise<GeoLocation> {

@@ -16,7 +16,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const KrogerService_1 = require("./api/services/KrogerService");
-const TargetService_1 = require("./api/services/TargetService");
+const TraderjoesService_1 = require("./api/services/TraderjoesService");
 const GroceryRouter_1 = require("./api/services/GroceryRouter");
 const GeoLocation_1 = require("./api/services/GeoLocation");
 // Initialize dotenv to use environment variables
@@ -33,9 +33,11 @@ app.post('/route', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     // get longitude, latitude, radius, and list of strings from request body
     const { latitude, longitude, radius, items } = req.body;
     const currentLocation = new GeoLocation_1.GeoLocation(longitude, latitude);
-    const krogerService = new KrogerService_1.KrogerService(process.env.KROGER_CLIENT_ID || '', process.env.KROGER_CLIENT_SECRET || '');
-    const targetService = new TargetService_1.TargetService(process.env.TARGET_API_KEY || '', process.env.GOOGLE_MAPS_API_KEY || '');
-    const groceryRouter = new GroceryRouter_1.GroceryRouter(currentLocation, radius, krogerService, targetService);
+    let groceryServices = [];
+    groceryServices.push(new KrogerService_1.KrogerService(process.env.KROGER_CLIENT_ID || '', process.env.KROGER_CLIENT_SECRET || ''));
+    // groceryServices.push(new TargetService(process.env.TARGET_API_KEY || '', process.env.GOOGLE_MAPS_API_KEY || ''));
+    groceryServices.push(new TraderjoesService_1.TraderjoesService(process.env.GOOGLE_MAPS_API_KEY || ''));
+    const groceryRouter = new GroceryRouter_1.GroceryRouter(currentLocation, radius, groceryServices);
     groceryRouter.processList(items).then((route) => {
         res.json(route);
     }).catch((error) => {

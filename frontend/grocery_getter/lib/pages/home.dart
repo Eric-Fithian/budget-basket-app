@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
     // Use the getBackendUrl method to determine the correct URL
     var backendUrl = getBackendUrl();
     var url = Uri.parse(backendUrl); // Use the dynamically determined URL here
-    var radius = 10; // Example in miles
+    var radius = 2; // Example in miles
 
     try {
       var response = await http.post(url,
@@ -101,6 +101,7 @@ class _HomePageState extends State<HomePage> {
 
       if (response.statusCode == 200) {
         print('List submitted successfully');
+        print(response.body);
         // Assuming StoreShoppingList is defined and ShoppingPage takes a list of StoreShoppingList
         List<StoreShoppingList> stores = (jsonDecode(response.body) as List)
             .map((i) => StoreShoppingList.fromJson(i))

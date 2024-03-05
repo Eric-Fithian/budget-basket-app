@@ -1,10 +1,10 @@
 class GeoLocation {
-    private longitude: number;
     private latitude: number;
+    private longitude: number;
 
-    constructor(longitude: number, latitude: number) {
-        this.longitude = longitude;
+    constructor(latitude: number, longitude: number) {
         this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     // Getters and setters for longitude and latitude
