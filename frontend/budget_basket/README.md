@@ -1,4 +1,4 @@
-# grocery_getter
+# budget_basket
 
 A new Flutter project.
 

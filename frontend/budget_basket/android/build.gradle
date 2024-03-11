@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.9.22'
+    ext.kotlin_version = '1.7.10'
     repositories {
         google()
         mavenCentral()
@@ -27,12 +27,4 @@ subprojects {
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
-}
-
-configurations.all {
-    resolutionStrategy {
-        force 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'
-        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0'
-        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0'
-    }
 }

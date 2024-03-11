@@ -1,6 +1,6 @@
 {
-    "name": "grocery_getter",
-    "short_name": "grocery_getter",
+    "name": "budget_basket",
+    "short_name": "budget_basket",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
