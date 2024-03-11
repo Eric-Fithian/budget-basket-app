@@ -16,34 +16,66 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const KrogerService_1 = require("./api/services/KrogerService");
+// import { TargetService } from "./api/services/TargetService";
+// import { CostcoService } from "./api/services/CostcoService";
 const TraderjoesService_1 = require("./api/services/TraderjoesService");
-const GroceryRouter_1 = require("./api/services/GroceryRouter");
-const GeoLocation_1 = require("./api/services/GeoLocation");
 // Initialize dotenv to use environment variables
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 // Example route
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
+app.get("/", (req, res) => {
+    res.send("Hello, World!");
 });
-app.post('/route', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/search/items", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Request body: ", req.body);
     // get longitude, latitude, radius, and list of strings from request body
-    const { latitude, longitude, radius, items } = req.body;
-    const currentLocation = new GeoLocation_1.GeoLocation(longitude, latitude);
+    const { latitude, longitude, radiusInMiles, keyword } = req.body;
     let groceryServices = [];
-    groceryServices.push(new KrogerService_1.KrogerService(process.env.KROGER_CLIENT_ID || '', process.env.KROGER_CLIENT_SECRET || ''));
-    // groceryServices.push(new TargetService(process.env.TARGET_API_KEY || '', process.env.GOOGLE_MAPS_API_KEY || ''));
-    groceryServices.push(new TraderjoesService_1.TraderjoesService(process.env.GOOGLE_MAPS_API_KEY || ''));
-    const groceryRouter = new GroceryRouter_1.GroceryRouter(currentLocation, radius, groceryServices);
-    groceryRouter.processList(items).then((route) => {
-        res.json(route);
-    }).catch((error) => {
-        res.status(500).json({ error: error.message });
-    });
+    groceryServices.push(new KrogerService_1.KrogerService(process.env.KROGER_CLIENT_ID || "", process.env.KROGER_CLIENT_SECRET || ""));
+    groceryServices.push(new TraderjoesService_1.TraderjoesService(process.env.GOOGLE_MAPS_API_KEY || ""));
+    let items = [];
+    for (let service of groceryServices) {
+        let serviceItems = yield service.searchForItem(keyword);
+        items = items.concat(serviceItems);
+    }
+    res.json(items);
 }));
+// app.post("/route", async (req, res) => {
+//   console.log("Request body: ", req.body);
+//   // get longitude, latitude, radius, and list of strings from request body
+//   const { latitude, longitude, radius, items } = req.body;
+//   const cleanedItems = items.map((item: string) =>
+//     item.toLowerCase().replace(/[^a-z\s]/g, "")
+//   );
+//   const currentLocation = new GeoLocation(latitude, longitude);
+//   let groceryServices: GroceryStoreService[] = [];
+//   groceryServices.push(
+//     new KrogerService(
+//       process.env.KROGER_CLIENT_ID || "",
+//       process.env.KROGER_CLIENT_SECRET || ""
+//     )
+//   );
+//   // groceryServices.push(new TargetService(process.env.TARGET_API_KEY || '', process.env.GOOGLE_MAPS_API_KEY || ''));
+//   groceryServices.push(
+//     new TraderjoesService(process.env.GOOGLE_MAPS_API_KEY || "")
+//   );
+//   const groceryRouter = new GroceryRouter(
+//     currentLocation,
+//     radius,
+//     groceryServices
+//   );
+//   groceryRouter
+//     .processList(cleanedItems)
+//     .then((route) => {
+//       console.log("Route: ", route);
+//       res.json(route);
+//     })
+//     .catch((error) => {
+//       res.status(500).json({ error: error.message });
+//     });
+// });
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
 });

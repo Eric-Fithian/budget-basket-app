@@ -17,10 +17,21 @@ const axios_1 = __importDefault(require("axios"));
 const GeoLocation_1 = require("./GeoLocation");
 class TraderjoesService {
     constructor(googleMapsApiKey) {
+        this.location = null;
+        this.distance = null;
         this.googleMapsApiKey = googleMapsApiKey;
     }
     getName() {
-        return 'Trader Joe\'s';
+        return "Trader Joe's";
+    }
+    initializeLocation(currentLocation, radius) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.location = yield this.getClosestLocation(currentLocation, radius);
+            this.distance = currentLocation.distanceTo(this.location);
+        });
+    }
+    isInRange(radius) {
+        return (this.location !== null && this.distance !== null && this.distance < radius);
     }
     getClosestLocation(currentLocation, radius) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -37,18 +48,21 @@ class TraderjoesService {
                     return new GeoLocation_1.GeoLocation(closestTraderJoes.geometry.location.lat, closestTraderJoes.geometry.location.lng);
                 }
                 else {
-                    throw new Error('No Trader Joe\'s locations found within the specified radius.');
+                    throw new Error("No Trader Joe's locations found within the specified radius.");
                 }
             }
             catch (error) {
-                console.error('Error fetching closest Trader Joe\'s location:', error);
+                console.error("Error fetching closest Trader Joe's location:", error);
                 throw error;
             }
         });
     }
     searchForItem(searchTerm) {
         return __awaiter(this, void 0, void 0, function* () {
-            const graphqlEndpoint = 'https://www.traderjoes.com/api/graphql';
+            if (!this.location) {
+                return [];
+            }
+            const graphqlEndpoint = "https://www.traderjoes.com/api/graphql";
             const query = `
           query SearchProducts($search: String, $pageSize: Int, $currentPage: Int, $storeCode: String = "301", $availability: String = "1", $published: String = "1") {
             products(
@@ -75,27 +89,29 @@ class TraderjoesService {
                 published: "1",
                 search: searchTerm,
                 currentPage: 0,
-                pageSize: 15 // Adjust the page size as needed
+                pageSize: 10, // Adjust the page size as needed
             };
             try {
                 const response = yield axios_1.default.post(graphqlEndpoint, {
                     query,
-                    variables
+                    variables,
                 }, {
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                         // Include any other headers your API requires
-                    }
+                    },
                 });
                 const items = response.data.data.products.items;
                 const formattedItems = items.map((item) => ({
                     name: item.name,
-                    price: item.price_range.minimum_price.final_price.value
+                    price: item.price_range.minimum_price.final_price.value,
+                    groceryStoreName: this.getName(),
+                    distance: this.distance,
                 }));
                 return formattedItems;
             }
             catch (error) {
-                console.error('Error fetching items:', error);
+                console.error("Error fetching items:", error);
                 throw error; // Or handle error as needed
             }
         });
