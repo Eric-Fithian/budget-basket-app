@@ -50,7 +50,7 @@ app.post("/search/items", async (req, res) => {
       items = items.concat(serviceItems);
     }
   }
-
+  console.log("Items: ", items);
   res.json(items);
 });
 

@@ -26,3 +26,9 @@ linter:
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+
+analyzer:
+  errors:
+    prefer_const_constructors: ignore
+    prefer_const_constructors_in_immutables: ignore
+

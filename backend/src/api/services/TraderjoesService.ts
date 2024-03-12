@@ -13,7 +13,7 @@ class TraderjoesService implements GroceryStoreService {
   }
 
   public getName(): string {
-    return "Trader Joe's";
+    return "TraderJoes";
   }
 
   public async initializeLocation(
