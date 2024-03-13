@@ -5,6 +5,7 @@ import 'package:budget_basket/models/grocery_store.dart';
 import 'package:budget_basket/models/item.dart';
 import 'package:budget_basket/models/store_list.dart';
 import 'package:budget_basket/pages/loading_page.dart';
+import 'package:budget_basket/pages/new_basket_page.dart';
 import 'package:budget_basket/pages/search_results.dart';
 import 'package:budget_basket/providers/shopping_cart_provider.dart';
 import 'package:budget_basket/util/my_colors.dart';
@@ -30,115 +31,10 @@ class ShoppingPage extends StatefulWidget {
 class _ShoppingPageState extends State<ShoppingPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  // late Item item1;
-  // late Item item2;
-  // late Item item3;
-  // late Item item4;
-  // late Item item5;
-  // late Item item6;
-  // late Position position;
-  // late StoreList storeListWalmart;
-  // late StoreList storeListTarget;
-  // late List<StoreList> storeLists;
 
   @override
   void initState() {
     super.initState();
-
-    // item1 = Item(
-    //   itemName:
-    //       "Organic Bananas Organic Bananas Organic Bananas Organic Bananas",
-    //   // itemDescription: "A bunch of organic bananas.",
-    //   itemStore: GroceryStore.KingSoopers,
-    //   itemDistance: 1.2,
-    //   itemPrice: 0.99,
-    //   itemSavings: 0.2,
-    //   itemImgUrl:
-    //       "https://m.media-amazon.com/images/I/81As7EJUNjL._AC_UF1000,1000_QL80_.jpg",
-    // );
-
-    // item2 = Item(
-    //   itemName: "Almond Milk",
-    //   itemDescription: "Unsweetened almond milk.",
-    //   itemStore: GroceryStore.Target,
-    //   itemDistance: 0.8,
-    //   itemPrice: 2.99,
-    //   itemSavings: 0.5,
-    //   // itemImgUrl: "https://example.com/almond_milk.jpg",
-    // );
-
-    // item3 = Item(
-    //   itemName: "Organic Strawberries",
-    //   itemDescription: "A carton of organic strawberries.",
-    //   itemStore: GroceryStore.Walmart,
-    //   itemDistance: 1.2,
-    //   itemPrice: 2.99,
-    //   itemSavings: 0.5,
-    //   // itemImgUrl: "https://example.com/strawberries.jpg",
-    // );
-
-    // item4 = Item(
-    //   itemName: "Organic Avocado",
-    //   itemDescription: "A single organic avocado.",
-    //   itemStore: GroceryStore.Walmart,
-    //   itemDistance: 1.2,
-    //   itemPrice: 1.99,
-    //   itemSavings: 0.3,
-    //   // itemImgUrl: "https://example.com/avocado.jpg",
-    // );
-
-    // item5 = Item(
-    //   itemName: "Organic Spinach",
-    //   itemDescription: "A bag of organic spinach.",
-    //   itemStore: GroceryStore.Walmart,
-    //   itemDistance: 1.2,
-    //   itemPrice: 2.99,
-    //   itemSavings: 0.5,
-    //   // itemImgUrl: "https://example.com/spinach.jpg",
-    // );
-
-    // item6 = Item(
-    //   itemName: "Organic Blueberries",
-    //   itemDescription: "A carton of organic blueberries.",
-    //   itemStore: GroceryStore.Walmart,
-    //   itemDistance: 1.2,
-    //   itemPrice: 3.99,
-    //   itemSavings: 0.7,
-    //   // itemImgUrl: "https://example.com/blueberries.jpg",
-    // );
-
-    // // Mock position
-    // position = Position(
-    //   latitude: 37.7749,
-    //   longitude: -122.4194,
-    //   timestamp: DateTime.now(),
-    //   accuracy: 0.0,
-    //   altitude: 0.0,
-    //   heading: 0.0,
-    //   speed: 0.0,
-    //   speedAccuracy: 0.0,
-    //   altitudeAccuracy: 0.0,
-    //   headingAccuracy: 0.0,
-    // );
-
-    // // StoreLists
-    // storeListWalmart = StoreList(
-    //   store: GroceryStore.Target,
-    //   location: position,
-    //   address: "1234 Elm St, San Francisco, CA 94107",
-    //   items: [item1, item3, item4, item5, item6],
-    // );
-
-    // storeListTarget = StoreList(
-    //   store: GroceryStore.TraderJoes,
-    //   location: position,
-    //   address: "5678 Oak St, San Francisco, CA 94107",
-    //   items: [item2],
-    // );
-
-    // // Testing list of StoreLists
-    // storeLists = [storeListWalmart, storeListTarget];
-
     // Initialize the TabController
     _tabController =
         TabController(length: widget.storeLists.length, vsync: this);
@@ -169,6 +65,18 @@ class _ShoppingPageState extends State<ShoppingPage>
     } else {
       throw 'Could not launch URL';
     }
+  }
+
+  void _onDoneShopping() {
+    // Clear the shopping cart
+    Provider.of<ShoppingCartProvider>(context, listen: false).clearItems();
+    // Navigate to the loading page
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewBasketPage(),
+      ),
+    );
   }
 
   @override
@@ -409,7 +317,7 @@ class _ShoppingPageState extends State<ShoppingPage>
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-            onPressed: () {},
+            onPressed: _onDoneShopping,
             style: ButtonStyle(
               minimumSize: MaterialStateProperty.all(Size(double.infinity, 0)),
               elevation: MaterialStateProperty.all(0),

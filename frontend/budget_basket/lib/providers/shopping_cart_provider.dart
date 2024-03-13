@@ -16,6 +16,11 @@ class ShoppingCartProvider with ChangeNotifier {
     _items.remove(item);
     notifyListeners();
   }
+
+  void clearItems() {
+    _items.clear();
+    notifyListeners();
+  }
 }
 
 List<Item> generateItems(int count) {
