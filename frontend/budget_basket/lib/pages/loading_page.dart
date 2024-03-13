@@ -66,7 +66,7 @@ class _LoadingPageState extends State<LoadingPage>
                 24, // Adjust vertical position to center the icon on the line
             left: iconPosition,
             child: Icon(
-              PhosphorIcons.regular.shoppingCart,
+              PhosphorIcons.shoppingCart(),
               size: 36,
               color: Colors.black, // Icon color
             ),

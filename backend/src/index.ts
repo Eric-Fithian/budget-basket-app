@@ -54,6 +54,44 @@ app.post("/search/items", async (req, res) => {
   res.json(items);
 });
 
+app.post("/search/stores", async (req, res) => {
+  console.log("Request body: ", req.body);
+  // get longitude, latitude, radius, and list of strings from request body
+  const { latitude, longitude, radiusInMiles } = req.body;
+
+  let groceryServices: GroceryStoreService[] = [];
+  groceryServices.push(
+    new KrogerService(
+      process.env.KROGER_CLIENT_ID || "",
+      process.env.KROGER_CLIENT_SECRET || ""
+    )
+  );
+  groceryServices.push(
+    new TraderjoesService(process.env.GOOGLE_MAPS_API_KEY || "")
+  );
+
+  let stores = [];
+
+  const currentLocation = new GeoLocation(latitude, longitude);
+
+  for (let service of groceryServices) {
+    const location = await service.initializeLocation(
+      currentLocation,
+      radiusInMiles
+    );
+    if (service.isInRange(radiusInMiles)) {
+      console.log("Service is in range");
+      stores.push({
+        name: service.getName(),
+        location: location,
+        address: service.getAddress(),
+      });
+    }
+  }
+  console.log("Stores: ", stores);
+  res.json(stores);
+});
+
 // app.post("/route", async (req, res) => {
 //   console.log("Request body: ", req.body);
 //   // get longitude, latitude, radius, and list of strings from request body

@@ -22,7 +22,7 @@ class TraderjoesService {
         this.googleMapsApiKey = googleMapsApiKey;
     }
     getName() {
-        return "Trader Joe's";
+        return "TraderJoes";
     }
     initializeLocation(currentLocation, radius) {
         return __awaiter(this, void 0, void 0, function* () {

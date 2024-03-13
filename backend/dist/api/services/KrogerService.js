@@ -106,14 +106,16 @@ class KrogerService {
                     return [];
                 }
                 const items = response.data.data.map((item) => {
-                    console.log(item.items[0]);
                     const price = item.items && item.items[0].price
                         ? item.items[0].price.regular
+                        : null;
+                    const img = item.images && item.images[1] && item.images[1].sizes[0].url
+                        ? item.images[1].sizes[0].url
                         : null;
                     return {
                         name: item.description,
                         price: price,
-                        img: item.images[0],
+                        img: img,
                         groceryStoreName: this.getName(),
                         distance: this.distance,
                     };

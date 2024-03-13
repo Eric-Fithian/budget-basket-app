@@ -3,7 +3,7 @@ import 'package:budget_basket/models/item.dart';
 import 'package:flutter/foundation.dart';
 
 class ShoppingCartProvider with ChangeNotifier {
-  List<Item> _items = generateItems(10);
+  List<Item> _items = [];
 
   List<Item> get items => _items;
 

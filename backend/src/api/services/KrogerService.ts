@@ -11,6 +11,8 @@ class KrogerService implements GroceryStoreService {
   private locationId: string;
   private location: GeoLocation | null = null;
   private distance: number | null = null;
+  private address: string = "";
+  private chainName: string = "Kroger";
 
   constructor(clientId: string, clientSecret: string) {
     this.clientId = clientId;
@@ -19,15 +21,20 @@ class KrogerService implements GroceryStoreService {
   }
 
   public getName(): string {
-    return "Kroger";
+    return this.chainName;
+  }
+
+  public getAddress(): string {
+    return this.address;
   }
 
   public async initializeLocation(
     currentLocation: GeoLocation,
     radius: number
-  ): Promise<void> {
+  ): Promise<GeoLocation> {
     this.location = await this.getClosestLocation(currentLocation, radius);
     this.distance = currentLocation.distanceTo(this.location);
+    return this.location;
   }
 
   public isInRange(radius: number): boolean {
@@ -97,11 +104,23 @@ class KrogerService implements GroceryStoreService {
       //   console.log(location.name, location.geolocation.latitude, location.geolocation.longitude);
       // }
 
+      console.log("Kroger Data Location:", response.data.data[0]);
+
       this.locationId = response.data.data[0].locationId;
       const closestLocation: GeoLocation = new GeoLocation(
         response.data.data[0].geolocation.latitude,
         response.data.data[0].geolocation.longitude
       );
+      this.address =
+        response.data.data[0].address.addressLine1 +
+        ", " +
+        response.data.data[0].address.city +
+        ", " +
+        response.data.data[0].address.state +
+        " " +
+        response.data.data[0].address.zipCode;
+
+      this.chainName = response.data.data[0].chain;
       return closestLocation;
     } catch (error) {
       console.error("Error fetching Kroger locations:", error);

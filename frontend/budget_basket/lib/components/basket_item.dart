@@ -94,7 +94,7 @@ class _BasketItemState extends State<BasketItem> {
                                               image: Image.network(
                                                       widget.itemImgUrl!)
                                                   .image,
-                                              fit: BoxFit.fill,
+                                              fit: BoxFit.contain,
                                             ),
                                           ),
                                         )
@@ -114,7 +114,7 @@ class _BasketItemState extends State<BasketItem> {
                                             child: Text(
                                               widget.itemName,
                                               overflow: TextOverflow.ellipsis,
-                                              softWrap: false,
+                                              maxLines: 2,
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 15,
@@ -182,7 +182,7 @@ class _BasketItemState extends State<BasketItem> {
                                                                   widget
                                                                       .itemStore)
                                                               .image,
-                                                      fit: BoxFit.cover,
+                                                      fit: BoxFit.contain,
                                                     ),
                                                   ),
                                                 ),

@@ -4,6 +4,7 @@ import 'package:budget_basket/models/item.dart';
 import 'package:budget_basket/providers/shopping_cart_provider.dart';
 import 'package:budget_basket/util/my_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +53,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              margin: EdgeInsets.only(left: 10, right: 10, bottom: 20),
+              margin: EdgeInsets.only(top: 25, left: 10, right: 10, bottom: 20),
               width: double.infinity,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -66,15 +67,60 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Flexible(
+                          child: Text(
+                            'Search Results For "${widget.searchTerm}"',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 23,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w700,
+                              height: 0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      minimumSize:
+                          MaterialStateProperty.all(Size(double.infinity, 0)),
+                      elevation: MaterialStateProperty.all(0),
+                      backgroundColor: MaterialStateProperty.all(MyColors.red),
+                      padding: MaterialStateProperty.all(
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      ),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
                         Text(
-                          'Search Results for ...',
+                          'Auto-Select Best Option For Me',
                           style: TextStyle(
-                            color: Color(0xFF030303),
-                            fontSize: 23,
+                            color: Colors.white,
+                            fontSize: 15,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w700,
                             height: 0,
                           ),
+                        ),
+                        Expanded(child: SizedBox.shrink()),
+                        Icon(
+                          PhosphorIcons.sparkle(PhosphorIconsStyle.bold),
+                          color: Colors.white,
+                          size: 24,
                         ),
                       ],
                     ),
@@ -130,15 +176,16 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           elevation: 0,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(PhosphorIcons.regular.house, size: 28),
+              icon: Icon(PhosphorIcons.house(), size: 28),
               label: 'Basket',
             ),
             BottomNavigationBarItem(
-              icon: Icon(PhosphorIcons.fill.basket, size: 28),
+              icon:
+                  Icon(PhosphorIcons.basket(PhosphorIconsStyle.bold), size: 28),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(PhosphorIcons.regular.user, size: 28),
+              icon: Icon(PhosphorIcons.user(), size: 28),
               label: 'Profile',
             ),
           ],

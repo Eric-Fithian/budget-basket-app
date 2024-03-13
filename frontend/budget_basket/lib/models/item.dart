@@ -8,6 +8,7 @@ class Item {
   final double itemPrice;
   final double? itemSavings;
   final String? itemImgUrl;
+  var isChecked = false;
 
   Item({
     required this.itemName,
@@ -24,8 +25,9 @@ class Item {
     return Item(
       itemName: json['name'],
       itemDescription: json['description'],
-      itemStore: GroceryStore.values.firstWhere(
-          (e) => e.toString() == 'GroceryStore.${json['groceryStoreName']}'),
+      itemStore: GroceryStore.values.firstWhere((e) =>
+          e.toString().toLowerCase() ==
+          'GroceryStore.${json['groceryStoreName']}'.toLowerCase()),
       itemDistance: json['distance'],
       itemPrice: json['price'],
       itemSavings: null,

@@ -19,6 +19,8 @@ const KrogerService_1 = require("./api/services/KrogerService");
 // import { TargetService } from "./api/services/TargetService";
 // import { CostcoService } from "./api/services/CostcoService";
 const TraderjoesService_1 = require("./api/services/TraderjoesService");
+// import { GroceryRouter } from "./api/services/GroceryRouter";
+const GeoLocation_1 = require("./api/services/GeoLocation");
 // Initialize dotenv to use environment variables
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -36,10 +38,16 @@ app.post("/search/items", (req, res) => __awaiter(void 0, void 0, void 0, functi
     groceryServices.push(new KrogerService_1.KrogerService(process.env.KROGER_CLIENT_ID || "", process.env.KROGER_CLIENT_SECRET || ""));
     groceryServices.push(new TraderjoesService_1.TraderjoesService(process.env.GOOGLE_MAPS_API_KEY || ""));
     let items = [];
+    const currentLocation = new GeoLocation_1.GeoLocation(latitude, longitude);
     for (let service of groceryServices) {
-        let serviceItems = yield service.searchForItem(keyword);
-        items = items.concat(serviceItems);
+        yield service.initializeLocation(currentLocation, radiusInMiles);
+        if (service.isInRange(radiusInMiles)) {
+            console.log("Service is in range");
+            let serviceItems = yield service.searchForItem(keyword);
+            items = items.concat(serviceItems);
+        }
     }
+    console.log("Items: ", items);
     res.json(items);
 }));
 // app.post("/route", async (req, res) => {
