@@ -6,7 +6,8 @@ import 'package:budget_basket/pages/loading_page.dart';
 import 'package:budget_basket/pages/search_results.dart';
 import 'package:budget_basket/pages/shopping_page.dart';
 import 'package:budget_basket/providers/shopping_cart_provider.dart';
-import 'package:budget_basket/util/my_colors.dart';
+import 'package:budget_basket/assets/my_colors.dart';
+import 'package:budget_basket/util/ItemSorter.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -55,10 +56,16 @@ class _BasketBuilderPageState extends State<BasketBuilderPage> {
       final itemResults =
           await ApiService.getItemsBySearch(40.0150, -105.2705, 10, value);
 
+      final sortedItemResults = ItemSorter.sortByNormalizedPrice(itemResults);
+
+      for (var item in sortedItemResults) {
+        print('${item.itemName}: ${item.normalizedPrice}');
+      }
+
       // Once the API call is done, replace the loading page with the new page, passing the API response
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => SearchResultsPage(
-                items: itemResults,
+                items: sortedItemResults,
                 searchTerm: value,
               )));
       _searchController.clear();

@@ -8,7 +8,7 @@ import 'package:budget_basket/pages/loading_page.dart';
 import 'package:budget_basket/pages/new_basket_page.dart';
 import 'package:budget_basket/pages/search_results.dart';
 import 'package:budget_basket/providers/shopping_cart_provider.dart';
-import 'package:budget_basket/util/my_colors.dart';
+import 'package:budget_basket/assets/my_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

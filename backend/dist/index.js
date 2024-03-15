@@ -20,7 +20,7 @@ const KrogerService_1 = require("./api/services/KrogerService");
 // import { CostcoService } from "./api/services/CostcoService";
 const TraderjoesService_1 = require("./api/services/TraderjoesService");
 // import { GroceryRouter } from "./api/services/GroceryRouter";
-const GeoLocation_1 = require("./api/services/GeoLocation");
+const GeoLocation_1 = require("./api/models/GeoLocation");
 // Initialize dotenv to use environment variables
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -49,6 +49,29 @@ app.post("/search/items", (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
     console.log("Items: ", items);
     res.json(items);
+}));
+app.post("/search/stores", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Request body: ", req.body);
+    // get longitude, latitude, radius, and list of strings from request body
+    const { latitude, longitude, radiusInMiles } = req.body;
+    let groceryServices = [];
+    groceryServices.push(new KrogerService_1.KrogerService(process.env.KROGER_CLIENT_ID || "", process.env.KROGER_CLIENT_SECRET || ""));
+    groceryServices.push(new TraderjoesService_1.TraderjoesService(process.env.GOOGLE_MAPS_API_KEY || ""));
+    let stores = [];
+    const currentLocation = new GeoLocation_1.GeoLocation(latitude, longitude);
+    for (let service of groceryServices) {
+        const location = yield service.initializeLocation(currentLocation, radiusInMiles);
+        if (service.isInRange(radiusInMiles)) {
+            console.log("Service is in range");
+            stores.push({
+                name: service.getName(),
+                location: location,
+                address: service.getAddress(),
+            });
+        }
+    }
+    console.log("Stores: ", stores);
+    res.json(stores);
 }));
 // app.post("/route", async (req, res) => {
 //   console.log("Request body: ", req.body);

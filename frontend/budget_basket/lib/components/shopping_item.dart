@@ -1,8 +1,8 @@
 import 'package:budget_basket/components/custom_checkbox.dart';
 import 'package:budget_basket/models/grocery_store.dart';
 import 'package:budget_basket/models/item.dart';
-import 'package:budget_basket/util/my_colors.dart';
-import 'package:budget_basket/util/my_logos.dart';
+import 'package:budget_basket/assets/my_colors.dart';
+import 'package:budget_basket/assets/my_logos.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingItem extends StatefulWidget {
@@ -81,53 +81,50 @@ class _ShoppingItemState extends State<ShoppingItem> {
                                       )
                                     : SizedBox.shrink(),
                                 Expanded(
-                                  child: Container(
-                                    height: 56,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: Text(
-                                            widget.item.itemName,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.w500,
-                                              height: 0,
-                                            ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: Text(
+                                          widget.item.itemName,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
                                           ),
                                         ),
-                                        const SizedBox(height: 5),
-                                        (widget.item.itemDescription != null)
-                                            ? SizedBox(
-                                                width: double.infinity,
-                                                child: Text(
-                                                  widget.item.itemDescription!,
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 12,
-                                                    fontFamily: 'Inter',
-                                                    fontWeight: FontWeight.w400,
-                                                    height: 0,
-                                                  ),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      (widget.item.itemDescription != null)
+                                          ? SizedBox(
+                                              width: double.infinity,
+                                              child: Text(
+                                                widget.item.itemDescription!,
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 12,
+                                                  fontFamily: 'Inter',
+                                                  fontWeight: FontWeight.w400,
+                                                  height: 0,
                                                 ),
-                                              )
-                                            : SizedBox.shrink(),
-                                      ],
-                                    ),
+                                              ),
+                                            )
+                                          : SizedBox.shrink(),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
+                          SizedBox(height: 6),
                           Container(
                             width: double.infinity,
                             child: Row(

@@ -1,3 +1,4 @@
+import 'package:budget_basket/models/UnitOfMeasurement.dart';
 import 'package:budget_basket/models/grocery_store.dart';
 
 class Item {
@@ -8,6 +9,9 @@ class Item {
   final double itemPrice;
   final double? itemSavings;
   final String? itemImgUrl;
+  final double unitAmount;
+  final double normalizedPrice;
+  final UnitOfMeasurement unitOfMeasurement;
   var isChecked = false;
 
   Item({
@@ -18,20 +22,38 @@ class Item {
     required this.itemPrice,
     this.itemSavings,
     this.itemImgUrl,
+    required this.unitAmount,
+    required this.normalizedPrice,
+    required this.unitOfMeasurement,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
     print("ITEM: $json");
+    final itemName = json['name'];
+    final itemDescription = json['description'];
+    final itemStore = GroceryStore.values.firstWhere((e) =>
+        e.toString().toLowerCase() ==
+        'GroceryStore.${json['groceryStoreName']}'.toLowerCase());
+    final itemDistance = json['distance'].toDouble();
+    final itemPrice = json['price'].toDouble();
+    final itemSavings = json['savings']?.toDouble();
+    final itemImgUrl = json['img'];
+    final unitAmount = json['unitAmount'].toDouble();
+    final normalizedPrice = json['normalizedPrice'].toDouble();
+    final unitOfMeasurement = UnitOfMeasurement.values.firstWhere((e) =>
+        e.toString() == 'UnitOfMeasurement.${json['unitOfMeasurement']}');
+
     return Item(
-      itemName: json['name'],
-      itemDescription: json['description'],
-      itemStore: GroceryStore.values.firstWhere((e) =>
-          e.toString().toLowerCase() ==
-          'GroceryStore.${json['groceryStoreName']}'.toLowerCase()),
-      itemDistance: json['distance'],
-      itemPrice: json['price'],
-      itemSavings: null,
-      itemImgUrl: json['img'],
+      itemName: itemName,
+      itemDescription: itemDescription,
+      itemStore: itemStore,
+      itemDistance: itemDistance,
+      itemPrice: itemPrice,
+      itemSavings: itemSavings,
+      itemImgUrl: itemImgUrl,
+      unitAmount: unitAmount,
+      normalizedPrice: normalizedPrice,
+      unitOfMeasurement: unitOfMeasurement,
     );
   }
 }

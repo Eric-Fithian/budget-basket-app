@@ -7,7 +7,7 @@ import 'package:budget_basket/pages/loading_page.dart';
 import 'package:budget_basket/pages/search_results.dart';
 import 'package:budget_basket/pages/shopping_page.dart';
 import 'package:budget_basket/providers/shopping_cart_provider.dart';
-import 'package:budget_basket/util/my_colors.dart';
+import 'package:budget_basket/assets/my_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';

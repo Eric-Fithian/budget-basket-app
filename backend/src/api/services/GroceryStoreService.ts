@@ -1,5 +1,5 @@
-import { GeoLocation } from "./GeoLocation";
-import { Item } from "./Item";
+import { GeoLocation } from "../models/GeoLocation";
+import { Item } from "../models/Item";
 
 interface GroceryStoreService {
   getName(): string;

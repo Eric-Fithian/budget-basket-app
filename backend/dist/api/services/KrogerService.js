@@ -14,24 +14,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KrogerService = void 0;
 const axios_1 = __importDefault(require("axios"));
-const GeoLocation_1 = require("./GeoLocation");
+const GeoLocation_1 = require("../models/GeoLocation");
+const Item_1 = require("../models/Item");
 class KrogerService {
     constructor(clientId, clientSecret) {
         this.accessToken = null;
         this.accessTokenExpiration = null;
         this.location = null;
         this.distance = null;
+        this.address = "";
+        this.chainName = "Kroger";
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.locationId = "";
     }
     getName() {
-        return "Kroger";
+        return this.chainName;
+    }
+    getAddress() {
+        return this.address;
     }
     initializeLocation(currentLocation, radius) {
         return __awaiter(this, void 0, void 0, function* () {
             this.location = yield this.getClosestLocation(currentLocation, radius);
             this.distance = currentLocation.distanceTo(this.location);
+            return this.location;
         });
     }
     isInRange(radius) {
@@ -80,8 +87,18 @@ class KrogerService {
                 // for (const location of response.data.data) {
                 //   console.log(location.name, location.geolocation.latitude, location.geolocation.longitude);
                 // }
+                console.log("Kroger Data Location:", response.data.data[0]);
                 this.locationId = response.data.data[0].locationId;
                 const closestLocation = new GeoLocation_1.GeoLocation(response.data.data[0].geolocation.latitude, response.data.data[0].geolocation.longitude);
+                this.address =
+                    response.data.data[0].address.addressLine1 +
+                        ", " +
+                        response.data.data[0].address.city +
+                        ", " +
+                        response.data.data[0].address.state +
+                        " " +
+                        response.data.data[0].address.zipCode;
+                this.chainName = response.data.data[0].chain;
                 return closestLocation;
             }
             catch (error) {
@@ -106,22 +123,22 @@ class KrogerService {
                     return [];
                 }
                 const items = response.data.data.map((item) => {
-                    const price = item.items && item.items[0].price
-                        ? item.items[0].price.regular
-                        : null;
+                    const name = item.description;
+                    const description = "";
                     const img = item.images && item.images[1] && item.images[1].sizes[0].url
                         ? item.images[1].sizes[0].url
                         : null;
-                    return {
-                        name: item.description,
-                        price: price,
-                        img: img,
-                        groceryStoreName: this.getName(),
-                        distance: this.distance,
-                    };
+                    const groceryStoreName = this.getName();
+                    const distance = this.distance || 0;
+                    const price = item.items && item.items[0].price
+                        ? item.items[0].price.regular
+                        : null;
+                    const arbitraryUOM = item.items[0].size.split(" ")[1];
+                    const unitAmount = item.items[0].size.split(" ")[0];
+                    return new Item_1.Item(name, description, img, groceryStoreName, distance, price, unitAmount, arbitraryUOM);
                 });
                 // remove items with no price
-                return items.filter((item) => item.price !== null && item.price !== undefined);
+                return items.filter((item) => item.price !== null && item.price !== undefined && item.price > 0);
             }
             catch (error) {
                 console.error("Error fetching Kroger items:", error);

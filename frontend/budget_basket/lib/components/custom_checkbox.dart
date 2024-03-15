@@ -1,4 +1,4 @@
-import 'package:budget_basket/util/my_colors.dart';
+import 'package:budget_basket/assets/my_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';

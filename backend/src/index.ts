@@ -6,9 +6,9 @@ import { KrogerService } from "./api/services/KrogerService";
 // import { CostcoService } from "./api/services/CostcoService";
 import { TraderjoesService } from "./api/services/TraderjoesService";
 // import { GroceryRouter } from "./api/services/GroceryRouter";
-import { GeoLocation } from "./api/services/GeoLocation";
+import { GeoLocation } from "./api/models/GeoLocation";
 import { GroceryStoreService } from "./api/services/GroceryStoreService";
-import { Item } from "./api/services/Item";
+import { Item } from "./api/models/Item";
 
 // Initialize dotenv to use environment variables
 dotenv.config();
@@ -45,12 +45,10 @@ app.post("/search/items", async (req, res) => {
   for (let service of groceryServices) {
     await service.initializeLocation(currentLocation, radiusInMiles);
     if (service.isInRange(radiusInMiles)) {
-      console.log("Service is in range");
       let serviceItems = await service.searchForItem(keyword);
       items = items.concat(serviceItems);
     }
   }
-  console.log("Items: ", items);
   res.json(items);
 });
 

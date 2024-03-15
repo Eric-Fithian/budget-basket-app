@@ -1,6 +1,6 @@
 import axios from "axios";
-import { GeoLocation } from "./GeoLocation";
-import { Item } from "./Item";
+import { GeoLocation } from "../models/GeoLocation";
+import { Item } from "../models/Item";
 import { GroceryStoreService } from "./GroceryStoreService";
 
 class KrogerService implements GroceryStoreService {
@@ -99,12 +99,6 @@ class KrogerService implements GroceryStoreService {
           },
         }
       );
-      // console.log('Kroger locations:')
-      // for (const location of response.data.data) {
-      //   console.log(location.name, location.geolocation.latitude, location.geolocation.longitude);
-      // }
-
-      console.log("Kroger Data Location:", response.data.data[0]);
 
       this.locationId = response.data.data[0].locationId;
       const closestLocation: GeoLocation = new GeoLocation(
@@ -150,26 +144,42 @@ class KrogerService implements GroceryStoreService {
         return [];
       }
       const items: Item[] = response.data.data.map((item: any) => {
-        const price =
-          item.items && item.items[0].price
-            ? item.items[0].price.regular
-            : null;
-
+        const name = item.description;
+        const description = null;
         const img =
           item.images && item.images[1] && item.images[1].sizes[0].url
             ? item.images[1].sizes[0].url
             : null;
-        return {
-          name: item.description,
-          price: price,
-          img: img,
-          groceryStoreName: this.getName(),
-          distance: this.distance,
-        };
+        const groceryStoreName = this.getName();
+        const distance = this.distance || -1;
+        const price =
+          item.items && item.items[0].price
+            ? item.items[0].price.regular
+            : null;
+        // first word is the amount, the rest is the unit of measurement
+        const arbitraryUOM = item.items[0].size.split(" ").slice(1).join(" ");
+        let unitAmount = item.items[0].size.split(" ")[0];
+        if (unitAmount.includes("/")) {
+          // convert from fractional string to decimal
+          const fraction = unitAmount.split("/");
+          unitAmount = parseFloat(fraction[0]) / parseFloat(fraction[1]);
+        }
+
+        return new Item(
+          name,
+          description,
+          img,
+          groceryStoreName,
+          distance,
+          price,
+          unitAmount,
+          arbitraryUOM
+        );
       });
       // remove items with no price
       return items.filter(
-        (item) => item.price !== null && item.price !== undefined
+        (item: Item) =>
+          item.price !== null && item.price !== undefined && item.price > 0
       );
     } catch (error) {
       console.error("Error fetching Kroger items:", error);

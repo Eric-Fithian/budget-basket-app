@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Item } from "./Item";
-import { GeoLocation } from "./GeoLocation";
+import { Item } from "../models/Item";
+import { GeoLocation } from "../models/GeoLocation";
 import { GroceryStoreService } from "./GroceryStoreService";
 
 class TraderjoesService implements GroceryStoreService {
@@ -82,7 +82,6 @@ class TraderjoesService implements GroceryStoreService {
         config
       );
 
-      console.log(response.data);
       // Assuming the response structure has a way to determine the closest location
       // This part might need to be adjusted based on the actual API response structure
       if (
@@ -164,6 +163,8 @@ class TraderjoesService implements GroceryStoreService {
                     }
                   }
                 }
+                sales_size
+                sales_uom_description
                 primary_image
               }
             }
@@ -193,16 +194,32 @@ class TraderjoesService implements GroceryStoreService {
         }
       );
 
-      const items = response.data.data.products.items;
-      const formattedItems = items.map((item: any) => ({
-        name: item.item_title,
-        price: item.price_range.minimum_price.final_price.value,
-        groceryStoreName: this.getName(),
-        distance: this.distance,
-        img: "https://www.traderjoes.com" + item.primary_image,
-      }));
+      const items = response.data.data.products.items.map((item: any) => {
+        const name = item.item_title;
+        const description = null;
+        const img = "https://www.traderjoes.com" + item.primary_image;
+        const groceryStoreName = this.getName();
+        const distance = this.distance || -1;
+        const price = item.price_range.minimum_price.final_price.value;
+        const arbitraryUOM = item.sales_uom_description;
+        const unitAmount = item.sales_size;
+        return new Item(
+          name,
+          description,
+          img,
+          groceryStoreName,
+          distance,
+          price,
+          unitAmount,
+          arbitraryUOM
+        );
+      });
 
-      return formattedItems;
+      // remove items with no price
+      return items.filter(
+        (item: Item) =>
+          item.price !== null && item.price !== undefined && item.price > 0
+      );
     } catch (error) {
       console.error("Error fetching items:", error);
       throw error; // Or handle error as needed
