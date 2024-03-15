@@ -1,4 +1,4 @@
-import 'package:budget_basket/models/UnitOfMeasurement.dart';
+import 'package:budget_basket/models/unit_of_measurement.dart';
 import 'package:budget_basket/models/grocery_store.dart';
 
 class Item {

@@ -8,10 +8,10 @@ class ApiService {
   static Future<List<Item>> getItemsBySearch(
       double lat, double long, double radiusInMiles, String keyword) async {
     // if android then use this url
-    var url = Uri.parse('http://localhost:3000/search/items');
+    var url = Uri.parse('http://localhost:80/search/items');
 
     if (Platform.isAndroid) {
-      url = Uri.parse('http://10.0.2.2:3000/search/items');
+      url = Uri.parse('http://10.0.2.2:80/search/items');
     }
     final response = await http.post(
       url,
@@ -39,10 +39,10 @@ class ApiService {
   static Future<List<StoreList>> getStoresByLocation(
       double lat, double long, double radiusInMiles) async {
     // if android then use this url
-    var url = Uri.parse('http://localhost:3000/search/stores');
+    var url = Uri.parse('http://localhost:80/search/stores');
 
     if (Platform.isAndroid) {
-      url = Uri.parse('http://10.0.2.2:3000/search/stores');
+      url = Uri.parse('http://10.0.2.2:80/search/stores');
     }
 
     final response = await http.post(

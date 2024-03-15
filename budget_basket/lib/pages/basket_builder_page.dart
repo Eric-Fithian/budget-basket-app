@@ -7,7 +7,8 @@ import 'package:budget_basket/pages/search_results.dart';
 import 'package:budget_basket/pages/shopping_page.dart';
 import 'package:budget_basket/providers/shopping_cart_provider.dart';
 import 'package:budget_basket/assets/my_colors.dart';
-import 'package:budget_basket/util/ItemSorter.dart';
+import 'package:budget_basket/util/item_sorter.dart';
+import 'package:budget_basket/util/traveling_sales_man.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -90,6 +91,9 @@ class _BasketBuilderPageState extends State<BasketBuilderPage> {
 
     //clean storeLists of lists with no items
     storeLists.removeWhere((storeList) => storeList.items.isEmpty);
+
+    storeLists = TravelingSalesMan.travelingSalesmanBruteForce(storeLists,
+        widget.userPosition.latitude, widget.userPosition.longitude);
 
     // Implement the navigation to the shopping page here
     Navigator.of(context).push(

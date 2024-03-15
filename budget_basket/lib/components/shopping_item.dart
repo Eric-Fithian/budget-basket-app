@@ -1,8 +1,6 @@
 import 'package:budget_basket/components/custom_checkbox.dart';
-import 'package:budget_basket/models/grocery_store.dart';
 import 'package:budget_basket/models/item.dart';
 import 'package:budget_basket/assets/my_colors.dart';
-import 'package:budget_basket/assets/my_logos.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingItem extends StatefulWidget {
